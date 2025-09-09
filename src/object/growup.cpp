@@ -25,12 +25,17 @@
 #include "sprite/sprite_manager.hpp"
 
 GrowUp::GrowUp(BonusType type, const Vector& pos, Direction direction, const std::string& custom_sprite) :
-  m_type(type),
-  m_default_sprite((type == BONUS_GROWUP) ? "images/powerups/egg/egg.sprite" : "images/powerups/badegg/badegg.sprite"),
-  MovingSprite(pos, custom_sprite.empty() ? ((type == BONUS_GROWUP) ? "images/powerups/egg/egg.sprite" : "images/powerups/badegg/badegg.sprite") : custom_sprite, LAYER_OBJECTS, COLGROUP_MOVING),
+  MovingSprite(pos,
+               !custom_sprite.empty() ? custom_sprite :
+               (type == BONUS_GROWUP) ? "images/powerups/egg/egg.sprite" :
+               "images/powerups/badegg/badegg.sprite",
+               LAYER_OBJECTS, COLGROUP_MOVING
+  ),
+  m_growup_type(type),
+  m_growup_default_sprite((m_growup_type == BONUS_GROWUP) ? "images/powerups/egg/egg.sprite" : "images/powerups/badegg/badegg.sprite"),
   m_physic(),
   m_custom_sprite(!custom_sprite.empty()),
-  m_shadesprite(SpriteManager::current()->create((type == BONUS_GROWUP) ? "images/powerups/egg/egg.sprite" : "images/powerups/badegg/badegg.sprite")),
+  m_shadesprite(SpriteManager::current()->create(m_growup_default_sprite)),
   m_lightsprite(SpriteManager::current()->create("images/objects/lightmap_light/lightmap_light-small.sprite"))
 {
   m_physic.enable_gravity(true);
@@ -39,7 +44,7 @@ GrowUp::GrowUp(BonusType type, const Vector& pos, Direction direction, const std
   m_shadesprite->set_action("shadow");
   // Configure the light sprite for the glow effect.
   m_lightsprite->set_blend(Blend::ADD);
-  if (m_type == BONUS_GROWUP) {
+  if (m_growup_type == BONUS_GROWUP) {
     m_lightsprite->set_color(Color(0.2f, 0.2f, 0.0f));
     SoundManager::current()->preload("sounds/grow.ogg");
   } else {
@@ -91,7 +96,7 @@ GrowUp::collision(MovingObject& other, const CollisionHit& hit )
 {
   auto player = dynamic_cast<Player*>(&other);
   if (player != nullptr) {
-    if (m_type == BONUS_GROWUP) {
+    if (m_growup_type == BONUS_GROWUP) {
       if (!player->add_bonus(BONUS_GROWUP, true)) {
         // Tux can't grow right now.
         collision_solid( hit );

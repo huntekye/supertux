@@ -250,7 +250,7 @@ BonusBlock::get_content_by_data(int tile_data) const
     case 15: return Content::LIGHT_ON;
     case 16: return Content::RETROGROW;
     case 17: return Content::RETROSTAR;
-    // TODO add a tile for BADEGG
+    case 18: return Content::BADEGG;
     default:
       log_warning << "Invalid box contents" << std::endl;
       return Content::COIN;

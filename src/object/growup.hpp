@@ -40,8 +40,8 @@ public:
 private:
   Physic m_physic;
 
-  BonusType m_type;
-  std::string m_default_sprite;
+  BonusType m_growup_type;
+  std::string m_growup_default_sprite;
   const bool m_custom_sprite;
   SpritePtr m_shadesprite;
   SpritePtr m_lightsprite;
